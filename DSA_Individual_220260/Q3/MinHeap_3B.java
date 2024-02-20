@@ -2,11 +2,11 @@ package Q3;
 
 import java.util.ArrayList;
 
-public class MinHeap {
+public class MinHeap_3B {
     // Min heap is such that binary tree where Parent node<=child node
     ArrayList<Integer> heapList;
 
-    MinHeap() {
+    MinHeap_3B() {
         heapList = new ArrayList<>();
     }
 
@@ -63,7 +63,7 @@ public class MinHeap {
     }
 
     public static void main(String[] args) {
-        MinHeap hp = new MinHeap();
+        MinHeap_3B hp = new MinHeap_3B();
         hp.insertHeap(12);
         hp.insertHeap(22);
         hp.insertHeap(76);

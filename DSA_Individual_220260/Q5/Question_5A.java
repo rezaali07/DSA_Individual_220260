@@ -1,10 +1,20 @@
+
 package Q5;
+
+
+// Question 5 (a)
+
+//  Implement ant colony algorithm solving travelling a salesman problem.
+
+
+
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AntColonyTSP {
+public class Question_5A {
     private double[][] pheromoneMatrix;
     private int[][] distanceMatrix;
     private int numberOfNodes;
@@ -16,8 +26,8 @@ public class AntColonyTSP {
     private double evaporationRate;
     private double initialPheromone;
 
-    public AntColonyTSP(int numberOfNodes, int numberOfAnts, int sourceNode, int destinationNode,
-            double alpha, double beta, double evaporationRate, double initialPheromone) {
+    public Question_5A(int numberOfNodes, int numberOfAnts, int sourceNode, int destinationNode,
+               double alpha, double beta, double evaporationRate, double initialPheromone) {
         this.numberOfNodes = numberOfNodes;
         this.numberOfAnts = numberOfAnts;
         this.sourceNode = sourceNode;
@@ -46,15 +56,19 @@ public class AntColonyTSP {
         Random random = new Random();
         List<Integer> bestPath = null;
         int bestDistance = Integer.MAX_VALUE;
+
         for (int iteration = 0; iteration < numberOfAnts; iteration++) {
             List<Integer> antPath = constructAntPath(sourceNode, destinationNode, random);
             int antDistance = calculatePathDistance(antPath);
+
             if (antDistance < bestDistance) {
                 bestDistance = antDistance;
                 bestPath = antPath;
             }
+
             updatePheromoneTrail(antPath, antDistance);
         }
+
         return bestPath;
     }
 
@@ -64,18 +78,21 @@ public class AntColonyTSP {
         int currentNode = source;
         antPath.add(currentNode);
         visitedNodes[currentNode] = true;
+
         while (currentNode != destination) {
             int nextNode = selectNextNode(currentNode, visitedNodes, random);
             antPath.add(nextNode);
             visitedNodes[nextNode] = true;
             currentNode = nextNode;
         }
+
         return antPath;
     }
 
     private int selectNextNode(int currentNode, boolean[] visitedNodes, Random random) {
         double[] probabilities = new double[numberOfNodes];
         double probabilitiesSum = 0.0;
+
         for (int node = 0; node < numberOfNodes; node++) {
             if (!visitedNodes[node]) {
                 double pheromoneLevel = Math.pow(pheromoneMatrix[currentNode][node], alpha);
@@ -84,36 +101,44 @@ public class AntColonyTSP {
                 probabilitiesSum += probabilities[node];
             }
         }
+
         double randomValue = random.nextDouble();
         double cumulativeProbability = 0.0;
+
         for (int node = 0; node < numberOfNodes; node++) {
             if (!visitedNodes[node]) {
                 double probability = probabilities[node] / probabilitiesSum;
                 cumulativeProbability += probability;
+
                 if (randomValue <= cumulativeProbability) {
                     return node;
                 }
             }
         }
-        return -1; // Unreachable code, should never happen
+
+        return -1; // Error in Logic
     }
 
     private int calculatePathDistance(List<Integer> path) {
         int distance = 0;
         int pathSize = path.size();
+
         for (int i = 0; i < pathSize - 1; i++) {
             int currentNode = path.get(i);
             int nextNode = path.get(i + 1);
             distance += distanceMatrix[currentNode][nextNode];
         }
+
         return distance;
     }
 
     private void updatePheromoneTrail(List<Integer> path, int distance) {
         double pheromoneDeposit = 1.0 / distance;
+
         for (int i = 0; i < path.size() - 1; i++) {
             int currentNode = path.get(i);
             int nextNode = path.get(i + 1);
+
             pheromoneMatrix[currentNode][nextNode] = (1 - evaporationRate) *
                     pheromoneMatrix[currentNode][nextNode] + evaporationRate * pheromoneDeposit;
         }
@@ -122,11 +147,12 @@ public class AntColonyTSP {
     public static void main(String[] args) {
         // Example usage
         int[][] distanceMatrix = {
-                { 0, 2, 3, 4 },
-                { 2, 0, 6, 1 },
-                { 3, 6, 0, 2 },
-                { 4, 1, 2, 0 }
+                {0, 2, 3, 4},
+                {2, 0, 6, 1},
+                {3, 6, 0, 2},
+                {4, 1, 2, 0}
         };
+
         int numberOfNodes = 4;
         int numberOfAnts = 10;
         int sourceNode = 0;
@@ -135,13 +161,14 @@ public class AntColonyTSP {
         double beta = 2.0;
         double evaporationRate = 0.5;
         double initialPheromone = 0.1;
-        AntColonyTSP antColony = new AntColonyTSP(numberOfNodes, numberOfAnts,
-                sourceNode, destinationNode,
-                alpha, beta, evaporationRate, initialPheromone);
+
+        Question_5A antColony = new Question_5A(numberOfNodes, numberOfAnts,
+                sourceNode, destinationNode, alpha, beta, evaporationRate, initialPheromone);
+
         antColony.initializePheromoneMatrix();
         antColony.initializeDistanceMatrix(distanceMatrix);
         List<Integer> shortestPath = antColony.findShortestPath();
-        System.out.println("Shortest path: " + shortestPath);
 
+        System.out.println("Shortest path: " + shortestPath);
     }
 }
